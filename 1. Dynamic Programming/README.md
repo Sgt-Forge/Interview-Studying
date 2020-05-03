@@ -11,7 +11,7 @@ But with dynamic programming, we achieve linear runtime:
 f[0] = 0
 f[1] = 1
 
-for (i = 2; i <= n; i++):
+for i in range(0, n):
 	f[i] = [i-1] + f[i-2];
 return f[n]
 ```
