@@ -4,6 +4,15 @@
 #include <algorithm>
 
 int DFS(std::unordered_map<int, std::vector<int> > grid){
+    std::vector< std::vector<int> > frontier;
+    std::unordered_map<int, int> came_from;
+    frontier.push_back(grid[0]);
+
+    while(!frontier.empty()){
+        auto current = frontier.front();
+
+        }
+    }
 
     return 0;
 }
@@ -19,9 +28,7 @@ int main(){
         {6, {3, 5, 7}},
         {7, {5, 6}},
     };
-    for (auto it = grid.begin(); it != grid.end(); ++it){
-        std::cout << (*it).first << std::endl;
-    }
+    int ret = DFS(grid);
 
     return 0;
 }
