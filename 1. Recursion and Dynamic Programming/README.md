@@ -44,6 +44,13 @@ Disadvantages:
 	- Each recursive call adds takes up space on the stack
 	- If there are N recursive calls, then the space complexity is O(N)
 
+## Half-and-Half
+In the Dynamic Programming section we'll go over two methods: the Top-Down approach and the Bottom-Up approach.  There's a thrid approach called Half-and-Half.  While you can use Dynamic Programming techniques in Half-and-Half, it makes more sense to talk about it right now.
+
+In Half-and-Half, you split up a problem into smaller subproblems specifically by cutting the problem in half.  The best example of the Half-and-Half approach is the Binary Search algorithm.  In binary search, you are looking for a number in a soreted list of increasing numbers.  You randomly pick a position, usually the mid point and you see if that position is the number you are looking for.  If the number is less than the one in the mid position, then you make a recusive call on bottom half of the list of numbers since we know that the number we're looking for is between out midpoint and the start of the list.  We do vice-versa if the number we're looking for is greater than out midpoint.
+
+The Half-and-Half approach is very useful for sorted data.  The runtime of half-and-half calls tends to be O(log(n)) since you're dataset is typically cut in half with each recursive call.
+
 # Dynamic Programming
 Dynamic programming optimizes recursive and iterative programming solutions by eliminating duplicate work.  Dynamic programming stores the results of subporblems so that we only have to compute them once.  We typically reducetime complexities from exponential to polynomial through dyanmic programming.
 
