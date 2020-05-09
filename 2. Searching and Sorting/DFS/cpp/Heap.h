@@ -30,6 +30,7 @@ public:
 
     Vertex pop();
     void push(const Vertex&);
+    bool empty();
 };
 
 #endif

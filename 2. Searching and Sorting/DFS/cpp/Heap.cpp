@@ -40,3 +40,10 @@ void Heap::push(const Vertex& node){
     newHead->setNext(this->head);
     this->head = newHead;
 }
+
+bool Heap::empty(){
+    if (this->head == NULL){
+        return true;
+    }
+    return false;
+}

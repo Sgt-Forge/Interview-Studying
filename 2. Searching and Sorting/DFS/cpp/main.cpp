@@ -16,44 +16,56 @@ void printNeigh(std::vector<Vertex> graph){
     }
 }
 
-int DFS(std::unordered_map<int, std::vector<int> > grid){
-    std::vector< std::vector<int> > frontier;
-    std::unordered_map<int, int> came_from;
-    frontier.push_back(grid[0]);
+std::vector<int> DFS(const std::vector<Vertex>& graph, int goal){
+    Heap frontier;
+    frontier.push(graph.at(0)); // assume 0 is origin
+    std::vector<int> cameFrom(graph.size());
 
-    while(!frontier.empty()){
-        auto current = frontier.front();
+    while( !frontier.empty()){
+        Vertex curr = frontier.pop();
+        if (curr.getId() == goal){
+            std::cout << "Success!\n" ;
+            break;
+        }
+
+        auto neighb = curr.getNeighbors();
+        for(auto it = neighb.begin(); it != neighb.end(); ++it){
+            int newId = *it;
+            std::cout << "Neighbor:\t" << newId << std::endl;
+            if ( cameFrom[newId-1] == 0){
+                frontier.push(graph.at(newId-1));
+                cameFrom[newId-1] = curr.getId();
+            }
+        }
     }
 
-    return 0;
+    return cameFrom;
 }
 
 int main(){
-    const Vertex n0(0, {2,3});
-    const Vertex n1(1, {3,4});
-    const Vertex n2(2, {0,5});
-    const Vertex n3(3, {1,4,5,6});
-    const Vertex n4(4, {1,3});
-    const Vertex n5(5, {2,3,6,7});
-    const Vertex n6(6, {3,5,7});
-    const Vertex n7(7, {5,6});
-    //std::vector<Vertex> nodes = {n0, n1, n2, n3, n4};
-    //printNeigh(nodes);
-    Heap heap;
-    heap.push(n0);
-    heap.push(n1);
-    heap.push(n2);
-    heap.push(n3);
-    heap.push(n4);
-    std::cout << heap.pop().getId() << std::endl;
-    std::cout << heap.pop().getId() << std::endl;
-    std::cout << heap.pop().getId() << std::endl;
-    heap.push(n5);
-    heap.push(n6);
-    heap.push(n7);
-    std::cout << heap.pop().getId() << std::endl;
-    std::cout << heap.pop().getId() << std::endl;
-    std::cout << heap.pop().getId() << std::endl;
+    const Vertex n0(1, {3,4});
+    const Vertex n1(2, {4,5});
+    const Vertex n2(3, {1,6});
+    const Vertex n3(4, {2,5,6,7});
+    const Vertex n4(5, {2,4});
+    const Vertex n5(6, {2,4,7,8});
+    const Vertex n6(7, {4,6,8});
+    const Vertex n7(8, {6,7});
+    std::vector<Vertex> graph = {n0, n1, n2, n3, n4, n5, n6, n7};
+    //printNeigh(graph);
+    std::vector<int> paths = DFS(graph, 8);
+    int node = 8;
+    int count = 0;
+    while(node != 1){
+        std::cout << "[ " << node << " ] ==>" ;
+        node = paths[node-1];
+        ++count;
+        if (count > 1000){
+            std::cout << "[ERROR]\tYour loop is broken has is running infinitely!" << std::endl;
+            break;
+        }
+    }
+    std::cout << "[ " << node << " ]" << std::endl;
 
     return 0;
 }
