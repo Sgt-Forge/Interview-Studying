@@ -3,12 +3,19 @@
 #include <vector>
 #include <algorithm>
 
+#include "Node.h"
+
 int DFS(std::unordered_map<int, std::vector<int> > grid){
 
     return 0;
 }
 
 int main(){
+    Node n0 = Node(0, {2,3});
+    auto bors = n0.getNeighbors();
+    for(auto it = bors.begin(); it != bors.end(); ++it){
+        std::cout << *it << std::endl;
+    }
     std::unordered_map<int, std::vector<int> > grid = {
         {0, {2, 3}},
         {1, {3, 4}},
@@ -19,9 +26,6 @@ int main(){
         {6, {3, 5, 7}},
         {7, {5, 6}},
     };
-    for (auto it = grid.begin(); it != grid.end(); ++it){
-        std::cout << (*it).first << std::endl;
-    }
 
     return 0;
 }

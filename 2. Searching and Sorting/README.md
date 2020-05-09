@@ -1,14 +1,24 @@
 # Searching and Sorting
 Searching and sorting are both:
-1. Great ways to help you understand algorithms & time complexity
+. Great ways to help you understand algorithms & time complexity
 2. Great ways to improve you coding skills
 3. **Very common topics in coding interviews**
 ## Searching
-### Breadth First Search
-### Depth First Search
+### Binary Search
+### Breadth First Search (BFS)
+### Depth First Search (DFS)
+#### Summary
+- What is DFS?
+#### Runtime Complexity
+#### Space Complexity
 ### Dijkstra's 
 ### A*
 
 
 
 ## Sorting
+
+# Terminology
+- Edge
+- Node
+- Vertex
