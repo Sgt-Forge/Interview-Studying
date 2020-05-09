@@ -11,7 +11,10 @@ private:
 public:
     Node();
     Node(int id, std::vector<int> neighbors);
+    Node(const Node& old);
     ~Node();
+
+    Node operator =(const Node&);
     
     inline void setId(int id){ this->id = id; }
     inline void setNeighbors(std::vector<int>& neighbors){ this->neighbors = neighbors; }
