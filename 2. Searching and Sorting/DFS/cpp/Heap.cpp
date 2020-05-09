@@ -1,19 +1,42 @@
 #include "Heap.h"
 
-Heap::Heap(){}
-Heap::Heap(std::vector<Node> nodes){
-    std::vector<Node> temp = nodes;
-    this->head = *(temp.begin());
-    temp.erase(temp.begin());
-    this->nodes = temp;
-}
-Heap::~Heap(){}
 
-Node Heap::pop(){
-    Node temp = this->head;
-    Node head = *(nodes.begin());
-    this->nodes.erase(nodes.begin());
-    
-    return temp;
+Heap::Heap(){
+    this->head = NULL;
 }
-void Heap::push(){}
+
+Heap::~Heap(){
+    if(this->head != NULL){
+        Node<Vertex>* temp;
+        while(this->head->getNext() != NULL){
+            temp = this->head->getNext();
+            delete this->head;
+            this->head = temp;
+        }
+        delete this->head;
+    }
+}
+
+template <class T>
+Heap::Node<T>::Node(const T& data){
+    this->data = data;
+    this->next = NULL;
+}
+
+template <class T>
+Heap::Node<T>::~Node(){}
+
+Vertex Heap::pop(){
+    Node<Vertex>* tempNode = this->head;
+    Vertex tempVertex = tempNode->getData();
+    this->head = tempNode->getNext();
+    delete tempNode;
+    
+    return tempVertex;
+}
+
+void Heap::push(const Vertex& node){
+    Node<Vertex>* newHead = new Node<Vertex>(node);
+    newHead->setNext(this->head);
+    this->head = newHead;
+}

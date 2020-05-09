@@ -1,22 +1,22 @@
-#include "Node.h"
+#include "Vertex.h"
 
-Node::Node(){
+Vertex::Vertex(){
     this->id = -1;
 }
 
-Node::Node(int id, std::vector<int> neighbors){
+Vertex::Vertex(int id, std::vector<int> neighbors){
     this->id = id;
     this->neighbors = neighbors;
 }
 
-Node::Node(const Node& old){
+Vertex::Vertex(const Vertex& old){
     this->id = old.id;
     this->neighbors = old.neighbors;
 }
 
-Node::~Node(){}
+Vertex::~Vertex(){}
 
-Node Node::operator =(const Node& old){
+Vertex Vertex::operator =(const Vertex& old){
     this->id = old.id;
     this->neighbors = old.neighbors;
 

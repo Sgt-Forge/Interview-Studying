@@ -3,23 +3,33 @@
 
 #include <vector>
 
-#include "Node.h"
+#include "Vertex.h"
 
 class Heap{
 private:
-    std::vector<Node> nodes;
-    Node head;
+    template <class T>
+    class Node{
+        private:
+            T data;
+            Node<T>* next;
+        
+        public:
+            Node<T>(const T&);
+            ~Node<T>();
+
+            inline T getData() {return this->data; }
+            inline Node<T>* getNext(){ return this->next; }
+            inline void setData(const T& data){ this->data = data; }
+            inline void setNext(Node<Vertex>* node){ this->next = node; }
+    };
+    Node<Vertex>* head;
 
 public:
     Heap();
-    Heap(std::vector<Node> nodes);
     ~Heap();
 
-    void setNodes(std::vector<int> nodes);
-    inline std::vector<Node> getNodes(){ return this->nodes;}
-
-    Node pop();
-    void push();
+    Vertex pop();
+    void push(const Vertex&);
 };
 
 #endif
