@@ -1,93 +1,166 @@
+#include <cmath>
 #include <iostream>
-#include <vector>
 #include <queue>
-#include <unordered_map>
-// #include <bits/stdc++.h>
 
-struct hash_pair {
-  template <class T1, class T2>
-  size_t operator()(const std::pair<T1, T2>& p) const{
-    auto hash1 = std::hash<T1>{}(p.first);
-    auto hash2 = std::hash<T2>{}(p.second);
-    return hash1 ^ hash2;
-  }
+enum Direction {Above = 0, Right = 1, Below = 2, Left = 3};
+
+class Compare{
+  public:
+    bool operator() (std::pair<int, int>a, std::pair<int, int> b){
+      return a.second > b.second;
+    }
 };
 
-
-void printGrid(std::vector< std::vector<int> > grid){
-  std::cout << "=============== GRID ===============\n";
-  for(auto it = grid.begin(); it != grid.end(); ++it){
-    for(auto inner = (*it).begin(); inner != (*it).end(); ++inner){
-      std::cout << *inner << ", ";
+bool validate(int index, int direction, int rows, int cols){
+  bool isValid = true;
+  switch (direction){
+  case Above:
+    // i.e. index = 3, cols = 10
+    if(index < cols){ // In top row, can't go up
+      isValid = false;
     }
-    std::cout << "\n" ;
+    break;
+  case Right:
+    // i.e. index = 7, cols 2 => false
+    if(index % (cols-1) == 0){ // In right col, can't go right
+      isValid = false;
+    }
+    break;
+  case Below:
+    // i.e. index = 33, rows = 3
+    if(index / cols >= rows-1){ // In bottom row, can't go up
+      isValid = false;
+    }
+    break;
+  case Left:
+    // i.e. index = 40,  cols = 10 => false
+    if(index % cols == 0){ // In left col, can't go left
+      isValid =  false;
+    }
+    break;
+  
+  default:
+    break;
   }
-  std::cout << "=============== GRID ===============\n";
+
+  return isValid;
 }
 
-bool isValidCord(std::pair<int, int> cord, int maxX, int maxY){
-  bool ret = false;
-  if (cord.first >= 0 && cord.first < maxX){
-    if (cord.second >= 0 && cord.second < maxY){
-      ret = true;
-    }
-  }
-  return ret;
+int heuristic(int c1, int c2, int rows, int cols){
+  int c1x = c1 % cols;
+  int c1y = c1 / cols;
+  int c2x = c2 % cols;
+  int c2y = c2 / cols;
+  return std::abs(c1x - c2x) + std::abs(c1y - c2y);
 }
 
-void aStar(){
+void aStar(int* grid, int* cameFrom, int* costSoFar, int origin, int goal, int rows, int cols){
+  std::priority_queue<std::pair<int, int>, std::vector< std::pair<int,int> >, Compare> priorityQueue;
+  priorityQueue.push({origin, 0});
+  cameFrom[origin] = -1;
+  costSoFar[origin] = 0;
+
+  int newCost;
+  int newIndex;
+
+  while (!priorityQueue.empty()){
+    std::pair<int, int> curr = priorityQueue.top();
+    priorityQueue.pop();
+
+    if(curr.first == goal){
+      std::cout << "Success!\n";
+      break;
+    }
     
-}
-
-int BFS(std::vector< std::vector<int> > grid){
-  std::queue<std::pair<int, int>> frontier;
-  std::pair<int, int> origin = {0, 0};
-  std::pair<int, int> goal = {-1, -1};
-  std::unordered_map< std::pair<int, int>, int, hash_pair> cameFrom;
-
-  frontier.push(origin);
-  while(!frontier.empty()){
-    std::pair<int, int> current = frontier.front();
-    frontier.pop();
-    std::cout << "x:\t" << current.first << std::endl;
-    std::cout << "y:\t" << current.second << std::endl;
-    if( grid[current.first][current.second] == 9){
-      std::cout << "[DBG]:\tFound the goal!" << std::endl;
-      goal.first = current.first;
-      goal.second = current.second;
-      cameFrom[goal] = 1 + cameFrom[current];
+    if(validate(curr.first, Above, rows, cols)){ // Check Above
+      newIndex = curr.first-cols;
+      newCost = costSoFar[curr.first] + 1; // TODO - Implement true cost function / feature
+      if( costSoFar[newIndex] == 0 || newCost < costSoFar[newIndex]){
+        costSoFar[newIndex] = newCost;
+        int priority = newCost + heuristic(newIndex, goal, rows, cols);
+        std::pair<int, int> newCoord = {newIndex, priority};
+        priorityQueue.push(newCoord);
+        cameFrom[newCoord.first] = curr.first;
+      }
     }
-
-    std::pair<int, int> left (current.first-1, current.second);
-    std::pair<int, int> top = {current.first, current.second+1};
-    std::pair<int, int> right = {current.first+1, current.second};
-    std::pair<int, int> bottom = {current.first, current.second-1};
-    if (isValidCord(left, grid.size(), grid[0].size()) && !cameFrom[left]){
-      frontier.push(left);
-      cameFrom[left] = cameFrom[current]; 
-    } 
-    if (isValidCord(top, grid.size(), grid[0].size()) && !cameFrom[top]){
-      frontier.push(top);
-      cameFrom[top] = 1 + cameFrom[current];
+    if(validate(curr.first, Right, rows, cols)){ // Check Right
+      newIndex = curr.first+1;
+      newCost = costSoFar[curr.first] + 1;
+      if( costSoFar[newIndex] == 0 || newCost < costSoFar[newIndex]){
+        costSoFar[newIndex] = newCost;
+        int priority = newCost + heuristic(newIndex, goal, rows, cols);
+        std::pair<int, int> newCoord = {newIndex, priority};
+        priorityQueue.push(newCoord);
+        cameFrom[newCoord.first] = curr.first;
+      }
+      
     }
-    if (isValidCord(right, grid.size(), grid[0].size()) && !cameFrom[right]){
-      frontier.push(right);
-      cameFrom[right] = 1 + cameFrom[current];
+    if(validate(curr.first, Below, rows, cols)){ // Check Below
+      newIndex = curr.first+cols;
+      newCost = costSoFar[curr.first] + 1;
+      if( costSoFar[newIndex] == 0 || newCost < costSoFar[newIndex]){
+        costSoFar[newIndex] = newCost;
+        int priority = newCost + heuristic(newIndex, goal, rows, cols);
+        std::pair<int, int> newCoord = {newIndex, priority};
+        priorityQueue.push(newCoord);
+        cameFrom[newCoord.first] = curr.first;
+      }
     }
-    if (isValidCord(bottom, grid.size(), grid[0].size()) && !cameFrom[bottom]){
-      frontier.push(bottom);
-      cameFrom[bottom] = 1 + cameFrom[current];
+    if(validate(curr.first, Left, rows, cols)){ // Check Left
+      newIndex = curr.first-1;
+      newCost = costSoFar[curr.first] + 1;
+      if( costSoFar[newIndex] == 0 || newCost < costSoFar[newIndex]){
+        costSoFar[newIndex] = newCost;
+        int priority = newCost + heuristic(newIndex, goal, rows, cols);
+        std::pair<int, int> newCoord = {newIndex, priority};
+        priorityQueue.push(newCoord);
+        cameFrom[newCoord.first] = curr.first;
+      }
     }
   }
-
-  return cameFrom[goal];
 }
 
-int main(int argc, char* argv[]){
-  std::vector< std::vector<int> > grid = {{1, 0, 0}, {1, 0 , 0}, {1, 9, 0}};
-  printGrid(grid);
-  std::cout << "=====================================\n";
-  std::cout << BFS(grid) << std::endl;
+int main(){
+  //printNeigh(graph);
+  const int rows = 10;
+  const int cols = 10;
+  const int origin = 0;
+  const int goal = 99;
+  int grid[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  };
+  int cameFrom[100] = {0};
+  int costSoFar[100] = {0};
+  aStar(grid, cameFrom, costSoFar, 0, 99, 10, 10);
+  int node = goal;
+  int count = 0;
+  while(node != origin){
+    std::cout << "[ " << node << " ] ==> ";
+    grid[node] = 1;
+    node = cameFrom[node];
+    count++;
+    if (count > 1000){
+      std::cout << "Your loop is broken\n";
+      break;
+    }
+  }
+  std::cout << "[ " << node << " ]\n";
+  for(int i = 0; i < rows; ++i){
+    for(int j = 0; j < cols; ++j){
+      int index = i*cols + j;
+      std::cout << grid[index] << ", ";
+    }
+    std::cout << std::endl;
+  }
 
     return 0;
 }

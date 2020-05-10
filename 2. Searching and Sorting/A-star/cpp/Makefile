@@ -1,14 +1,13 @@
 # ================================
 CXX = g++
 CXXFLAGS = -Wall -pedantic -g
-OBJECTS = main.o SimpleGraph.o
+OBJECTS = main.o 
 # ================================
 
 main: $(OBJECTS)
 	$(CXX) -o main $(CXXFLAGS) $(OBJECTS)
 
-main.o: SimpleGraph.h
-SimpleGraph.o: SimpleGraph.h
+main.o: 
 
 .PHONY: clean
 clean:
