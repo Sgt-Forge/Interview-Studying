@@ -75,3 +75,4 @@
 - [4] https://cs.stackexchange.com/questions/56176/a-graph-search-time-complexity
 - [5] https://en.wikipedia.org/wiki/Consistent_heuristic
 - [6] https://en.wikipedia.org/wiki/Admissible_heuristic
+- [7] https://stackoverflow.com/questions/1715401/why-is-the-complexity-of-a-exponential-in-memory 
