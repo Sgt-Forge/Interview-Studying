@@ -31,7 +31,6 @@ std::vector<int> DFS(const std::vector<Vertex>& graph, int goal){
         auto neighb = curr.getNeighbors();
         for(auto it = neighb.begin(); it != neighb.end(); ++it){
             int newId = *it;
-            std::cout << "Neighbor:\t" << newId << std::endl;
             if ( cameFrom[newId-1] == 0){
                 frontier.push(graph.at(newId-1));
                 cameFrom[newId-1] = curr.getId();

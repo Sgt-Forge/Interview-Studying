@@ -1,5 +1,5 @@
 #ifndef VERTEX_H 
- #define VERTEX_H
+#define VERTEX_H
 
 #include <vector>
 
@@ -10,8 +10,8 @@ private:
     
 public:
     Vertex();
-    Vertex(int id, std::vector<int> neighbors);
-    Vertex(const Vertex& old);
+    Vertex(int, std::vector<int>);
+    Vertex(const Vertex&);
     ~Vertex();
 
     Vertex operator =(const Vertex&);
