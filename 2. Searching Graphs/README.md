@@ -88,21 +88,94 @@ Adjacency lists are good with sparse graphs because the lists are small and don'
 # Breadth First Search (BFS)
 ## Summary
 - What is BFS?
-- When to use / What it's good at
+
+Beadth First Search begins at an arbitrary vertex of a graph or the root node of a tree.  BFS will loop through each neighbor of the current vertex in search for the goal.  All neighbors of the current vertex are searched ("expanded") and added to a queue known as the **frontier**.  The frontier is the set of nodes that have been searched, but their own neighbors have yet to be searched and added to the queue.  Once all neighbors of the current node have been added to the queue, BFS wil repeat the process on the next vertex from the queue.  BFS repeats until the queue is empty or a goal vertex if found.  
+
+Another way to think about BFS: BFS searches all verticies that are one edge away from the starting vertex.  Then BFS searches all verticies that are two edges away from the starting vertex.  BFS will continue searching verticies at each depth until there are no verticies left or a goal vertex if found.
+
+The following image shows the search order for a BFS search
+
+![bfs_example1](../images/bfs_example1.png)[8](https://en.wikipedia.org/wiki/File:Breadth-first-tree.svg)
+
+BFS is a **blind search**.  Blind search means that the search algorithm will consider/search all nodes in a graph if given enough time.  the opposite of blind search is **informed search**.  Informed search means that an algorithm will use a function or **heuristic** to determine if a node is worth exploring.  A **heuristic** estimates if a node will efficiently lead to a goal.
+
+Use BFS when:
+1. The answer is close to the root
+1. You want the answer that is closest to the root
+1. You have a deep tree but solutions are rare (i.e. it would take Depth First Search a long time to find the goal)
+1. You want to find the shortest path to a node on a simple graph(Depth First Seach should not be used for this)A
+1. If the tree is infinite (Don't use Depth First Search)
+
+Don't Use BFS when:
+1. Tree is very wide, you might run out of memory to hold the expanded nodes.  This is because the frontier could be very large
+1. The graph is dense / the tree has a large branch factor (the frontier grows very large)
+1. Goal nodes are frequent and located deep in the tree
+
 ## Runtime Complexity
+- Worst case:
+1. `O(|V| + |E|)` where `|V|` is the number of verticies and `|E|` is the number of edges
+1. `O(b^d)` where `b` is the branching factor and `d` is the depth [[9]](https://en.wikipedia.org/wiki/Breadth-first_search)[[10]](https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/analysis-of-breadth-first-search)
+
+- Why?
+Because you go through each vertex (`|V|`).  That takes `O(|V|)` time.  Everytime you look at a new vertex `v`, you add all of it's neighbors to the queue.  That takes `O(e)` time, where `e` is equal to the number of edges for that given vertex, and only that vertex.  The sum of all `e` then equals `|E|`, hence `O(|E|)`.  This is why we use addition ( `O(|V| + |E|)`) and not multiplication ( `O(|V| * |E|`)).    That might sound like the answer should be `|V| * |E| ` but that is incorrect.  Saying `|V| * |E|` implies that each vertex has `|E|` number of edges, which is clearly untrue.
+
 ## Space Complexity
+- Worst case:
+1. `O(|V|)` where `|V|` is the number of verticies and `|E|` is the number of edges
+1. `O(b^d)` where `b` is the branching factor and `d` is the depth
+
+- Why?
+The worst case for BFS occurs when the frontier is largest, because you have to store each vertex in the frontier.  The frontier is largest at the widest part of the graph.  You could imagine a simple graph where all nodes are child nodes of a single root node.  That means we have to add each of these child nodes to the frontier.  Since there are `|V|` nodes in the graph, and `|V| - 1` of these nodes are child nodes, we must store `|V| - 1` nodes in the frontier.  We already store the current node in memeory because we are working with it, thus we get `O(|V|)` complexity.
+
 # Depth First Search (DFS)
 ## Summary
 - What is DFS?
-- When to use / What it's good at
+
+DFS starts at an arbitrary vertex or a root node of a tree.  DFS will search a single branch until it reaches a leaf node.  DFS will then **backtrack** up to the parent node of the leaf node.  Backtrack means.thdtgDFS moess back to a node it was p.eviously a.  DFS will then search as far down the nt branch of the parent node until another leaf node is found.  DFSll repeat eprocess of backtrackig tthe parnt noe and searchin until th parent node ha no more children to search.  Then, DFS will backtrack to the parent node of the parent node.  DFS will continue the process of backtracking until it backtracks to the root node.  DFS will then search the other branches of the tree / graph.  DFS will repeat searching to leaf nodes and backtracking until all nodes have been searched or a goal node is found.[[11]](https://brilliant.org/wiki/depth-first-search-dfs/)[[12]](https://en.wikipedia.org/wiki/Depth-first_search)
+
+The following image shows how DFS searches a tree:
+
+![dfs_example1](../images/dfs_example1.png)[[13]](https://en.wikipedia.org/wiki/File:Depth-first-tree.svg)
+
+DFS is a **blind search**.  Blind search means that the search algorithm will consider/search all nodes in a graph if given enough time.  the opposite of blind search is **informed search**.  Informed search means that an algorithm will use a function or **heuristic** to determine if a node is worth exploring.  A **heuristic** estimates if a node will efficiently lead to a goal.
+
+Use DFS when:
+1. When goal nodes are frequent and deep
+1. When the tree is very wide (large branching factor) and you want to avoid BFS
+1. When you need better memory effeciency than BFS
+
+
+AVOID DFS when:
+1. The tree is very deep and goal nodes are infrequent.  You might run out of memory / it will take long to find a goal
+1. When goals are close to the root, BFS is faster
+1. When the tree is infinite, DFS may be more likely to get stuck on an infinite branch.  BFS may have a better time dealing with infinite graphs
+
 ## Runtime Complexity
+- Worst case:
+1. `O(|V| + |E|)` where `|V|` is the total number of verticies / nodes and `|E|` is the total number of edges / branches in the graph.
+2. `O(b^d)` where `b` is the branching factor and `d` is the depth
+
+-Why?
+As you traverse to each vertex `v` in the set of verticies `V` you will get `O(|V|)` time.  Then, at each node, you will observe each of its edges (although not at the same time since you go down a branch until a leaf node).  This gets you `e - 1` where `e` is the number of edges for the node `v` and only that given node.  Then when you backtrack, you observe the last edge which gives you `e`.  The sum of all `e` for all `v` is `|E|`, hence `O(|E|)`.  Thus a total of `O(|V| + |E|)`
+
 ## Space Complexity
-# Greedy Best First Search (GBFS)
+- Worst case:
+1. `O(|V|)` Where `|V|` is the total number of verticies in the graph.
+1. `O(b*d)` Where 'b' is the branching factor and `d` is the depth
+- Why?
+Because you could construct a graph where the graph is a single file line of nodes.  Each node has a two edges connecting that node to a node behind it and another node in front of it.  The two exceptions being the root node and the leaf node.  Since the entire graph is one large branch, you have to store the entire graph in memory.  Thus, `O(|V|)`.  You also get `O(1*d)` since the braching factor is `1` and the depth is the number of nodes.
+
+Typically, this is not the case.  Often, you will see wider graphs with a smaller depth, which is why DFS has better memory complexity than BFS (*usually* but not always).
+# Best First Search and Greedy Best First Search
 ## Summary
-- What is GBFS?
-- When to use / What it's good at
-## Runtime Complexity
-## Space Complexity
+- What is Best First Search?
+
+Best First Search searches a graph by expanding nodes that appear most promising according to a certain function or **heuristic**.  A heuristic estimates if a node will efficiently lead to a goal.  The simplest form of a heurisitic is the estimated distance from a frontier node to the goal node.  Best First Search starts at an arbitrary vertex in a graph or a root node in a tree.  BFS will loop through all neighbors of the current node and observe the **cost** of value of the heuristic for each neighbor.  Best First Search adds each neighbor to a Priority-Queue, where the neighbor with the "best" heuristic value will be explore first.  If that neighbor has subsequent neighbors with "better" heuristic costs, then those new neighbors will gain priority in the queue.  The term "better" changes depending on the heuristic used. [[14]](https://en.wikipedia.org/wiki/Best-first_search)
+
+ONLY Using a heuristic such as the estimated distance to the goal node results in Greedy Best First Search.  A Greedy Best First Search might result in suboptimal results beacuse the algorithm prioritizes the distance between a given node and the goal node and ignores the actual cost of the path from the start node to the given node.
+
+Best First Search can be implemented in a simple form by using Greedy Best First Search.  However, it is difficult to talk about specifics without more knowledge about the heuristics used.  Look at the sections on **Dijkstra's** and **A\*** to better understand complexities and use cases for **informed searches**.  If you want to observe how Best First Search behaves compared to normal Breadth First Search, read this amazing post about searching algorithms: [[15]](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+
 # Iterative Deepening Search (IDS)
 ## Summary
 - What is IDS?
@@ -171,6 +244,9 @@ Adjacency lists are good with sparse graphs because the lists are small and don'
 - leaf node
 - child node
 - branch
+- blind search
+- informed search
+- heuristic 
 
 # Topics Not Covered
 - Connected Graphs vs. Disconnected graphs
@@ -185,5 +261,12 @@ Adjacency lists are good with sparse graphs because the lists are small and don'
 - [5] [Sparse vs. Dense Graphs by Bruno P. Reiss](https://web.archive.org/web/20160604215638/http://www.brpreiss.com/books/opus4/html/page534.html)
 - [6] [Sparse vs. Dense and Matrix vs. List on CS StackExchange](https://cs.stackexchange.com/questions/54575/a-graphs-density-and-sparsity)
 - [7] [Adjacency List and Adjacency Matrix Comparison on Stack Overflow](https://stackoverflow.com/questions/2218322/what-is-better-adjacency-lists-or-adjacency-matrices-for-graph-problems-in-c)
-
+- [8] [Wikipedia BFS image](https://en.wikipedia.org/wiki/File:Breadth-first-tree.svg)
+- [9] [Wikipedia BFS](https://en.wikipedia.org/wiki/Breadth-first_search)
+- [10] [Khan Academy BFS](https://www.khanacademy.org/computing/computer-science/algorithms/breadth-first-search/a/analysis-of-breadth-first-search)
+- [11] [Brillian on DFS](https://brilliant.org/wiki/depth-first-search-dfs/)
+- [12] [Wikipedia on DFS](https://en.wikipedia.org/wiki/Depth-first_search)
+- [13] [Wikipedia DFS image](https://en.wikipedia.org/wiki/File:Depth-first-tree.svg)
+- [14] [Wikipedia on BFS](https://en.wikipedia.org/wiki/Best-first_search)
+- [15] [RedBlobGames on A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 # Other Great Resources You Should Study
