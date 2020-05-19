@@ -144,7 +144,6 @@ Use DFS when:
 1. When the tree is very wide (large branching factor) and you want to avoid BFS
 1. When you need better memory effeciency than BFS
 
-
 AVOID DFS when:
 1. The tree is very deep and goal nodes are infrequent.  You might run out of memory / it will take long to find a goal
 1. When goals are close to the root, BFS is faster
@@ -166,6 +165,38 @@ As you traverse to each vertex `v` in the set of verticies `V` you will get `O(|
 Because you could construct a graph where the graph is a single file line of nodes.  Each node has a two edges connecting that node to a node behind it and another node in front of it.  The two exceptions being the root node and the leaf node.  Since the entire graph is one large branch, you have to store the entire graph in memory.  Thus, `O(|V|)`.  You also get `O(1*d)` since the braching factor is `1` and the depth is the number of nodes.
 
 Typically, this is not the case.  Often, you will see wider graphs with a smaller depth, which is why DFS has better memory complexity than BFS (*usually* but not always).
+
+# Iterative Deepening Search (IDS) / Iterative Deepening Depth First Search
+## Summary
+- What is IDS? Iterative deepening search can be can thought of a combination of Depth First Search and Breadth First Search.  IDS searches a tree using DFS but only to a certain depth.  Generally, IDS starts by performing DFS upto a depth a 1, then 2, then 3, and so on.  IDS will terminate the search when it finds a goal node or when there are no nodes left.  The result is IDS generally searches a tree in the same order as BFS.  The difference between IDS and BFS is that IDS performs better in terms of space complexity.  IDS maintains a frontier exactly like DFS.  Thus DFS searches a single branch before moving to the next and does not have to maintain a large frontier as BFS does.  The net result is: you generally have worse time complexity than BFS, but you vastly improve the space complexity (you get the space complexity of DFS) [[16]](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)[[17]](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
+
+- When to use / What it's good at
+
+Use IDS when:
+- You want to search in the order of BFS but you want to optimize space
+- When you can accept slightly slower time performance than BFS 
+- Essentially, use IDS anytime you would use BFS but can't afford the memory complexity of BFS
+
+DON'T use IDS when:
+- Goal nodes are frequent and deep in the tree (use DFS)
+- When you have enough memory to implement BFS
+- Basically, anytime when you either (1) have enough memory for BFS or (2) should be using DFS 
+
+
+## Runtime Complexity
+Worst case:
+- `O(b^d)` where `b` is branching factor and `d` is depth of the tree
+    - Many opt to talk about IDS in terms of `b` and `d` as opposed to `|V|` and `|E|`
+- `O(|V| + |E|)` where `|V|` is the total number of verticies in the graph and `|E|` is the total number of edges in the graph [16](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)[17](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
+Why?
+- IDS will end up duplicating searches since it iterates across depths, so it generally runs slower than BFS in the sense that it duplicates searches.  However, since it IDS searches nodes in the same order as BFS, IDS typically finds goals faster than DFS.  Obviously it is subject to change due to different graph structures with different placements and frequencies for goal nodes.
+## Space Complexity
+- `O(b*d)` where `b` is branching factor and `d` is depth of the tree [[16]](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)[[17]](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
+    - Many opt to talk about IDS in terms of `b` and `d` as opposed to `|V|` and `|E|`
+- `O(|V|)`
+Why?
+-  IDS maintains a frontier exactly like DFS, where the frontier consists of the current branch and the unsearched neighbors on all depths of that branch.
+
 # Best First Search and Greedy Best First Search
 ## Summary
 - What is Best First Search?
@@ -176,12 +207,6 @@ ONLY Using a heuristic such as the estimated distance to the goal node results i
 
 Best First Search can be implemented in a simple form by using Greedy Best First Search.  However, it is difficult to talk about specifics without more knowledge about the heuristics used.  Look at the sections on **Dijkstra's** and **A\*** to better understand complexities and use cases for **informed searches**.  If you want to observe how Best First Search behaves compared to normal Breadth First Search, read this amazing post about searching algorithms: [[15]](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 
-# Iterative Deepening Search (IDS)
-## Summary
-- What is IDS?
-- When to use / What it's good at
-## Runtime Complexity
-## Space Complexity
 # Dijkstra's 
 ## Summary
 - What is Dijkstra's?
@@ -269,4 +294,24 @@ Best First Search can be implemented in a simple form by using Greedy Best First
 - [13] [Wikipedia DFS image](https://en.wikipedia.org/wiki/File:Depth-first-tree.svg)
 - [14] [Wikipedia on BFS](https://en.wikipedia.org/wiki/Best-first_search)
 - [15] [RedBlobGames on A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+- [16] [ICS.edu on IDS/IDDS](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)
+- [17] [GeeksForGeeks on IDS/IDDS](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
+
 # Other Great Resources You Should Study
+- https://cs.stanford.edu/people/abisee/gs.pdf
+- Stanford
+    - Comparing BFS and DFS
+        - https://cs.stanford.edu/people/abisee/tutorial/bfsdfs.html
+    - Comparing BFS vs. Greedy Best First
+        - https://cs.stanford.edu/people/abisee/tutorial/greedy.html
+    - Comparing Dijkstra's and A*
+        - https://cs.stanford.edu/people/abisee/tutorial/customize.html 
+
+- MIT Introduction  to Algorithms for EECS
+    - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/index.htm 
+- MIT Opencourseware EECS AI lectures
+    - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/lecture-videos/
+    - Lecture on A*
+        - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/lecture-videos/lecture-5-search-optimal-branch-and-bound-a/ 
+    - Tutorials
+        - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/tutorials/
