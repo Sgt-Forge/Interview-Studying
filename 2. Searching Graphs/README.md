@@ -210,15 +210,55 @@ Best First Search can be implemented in a simple form by using Greedy Best First
 # Dijkstra's 
 ## Summary
 - What is Dijkstra's?
+Dijkstra's algorithm is a famous pathfinding algorithm.  It's typically used to find the shortest path between two verticies in a graph.  It can also be used to find the shortest path from one vertex to all other verticies in a graph.  
+
+Dijkstra operates similar to BFS, however Dijkstra implements two important differences.  First, Dijkstra's uses a Pirority queue to sort verticies in the the frontier.  BFS will explore the first vertex from the frontier.  In contrast, Dijkstra will explore the frontier node that has the shortest path to the starting vertex.  Second, Dijkstra only adds a neighbor to the Priority queue if it meets one of two conditions: (1) the neighbor has never been seen before, or (2) the cost / length of the current path to the neighbor (from the current node) is less than the cost/length of the currently stored path to the neighbor.  Basically, it's possible to find multiple paths to any given node, and we shall update that given node if we find a new shorter path to that given node.
+
 - When to use / What it's good at
+
+Use Dijkstra when:
+- You need to guarantee that you find the shortest path to a node
+- You have a complex graph that implements different edge costs between nodes
+    - i.e. The length / cost to traverse an edge from one vertex to another varies from edge to edge.  This design feature of the graph means that you can have multiple paths of different lengths that arrive at the same node
+    - Example picture:
+
+    ![dijkstras1](../images/dijkstras1.png)
+    - Notice that that there are two routes from vertex `A` to vetex `D`.  You could either go through vertex `C` or vertex `B`.  But the blue numbers next to each edge indicate the path cost (the length) of the edge.  Thus, the length of the path `[A, C, D]` is 2 while the length of the path `[A, B, D]` is 12.  Dijkstra would identify the shorter of the two paths
+
+Don't Use Dijstra's
+    - When you don't have costs / path lengths in a graph
+    - When you can effectively implement a heuristic function along with the path length calculation.  If you can can add a heuristic function A* might be a better choice
+    - When you have obstacles in your graph and you can use A*.  A* can avoid obstacles with a good heuristic function
 ## Runtime Complexity
+Worse case:
+
+- Time complexity can be reduced to `O(|E| + |V|log|V|)` if using a Fibonacci heap for the priority queue.  This is the common answer
+- `O((|E| + |V|) * log|V|)` where `|E|` is the total number of edges in the graph and `|V|` is the total number of verticies in the graph
+    - This is when using a min-binary heap for the priority queue
+
+Why?
+
+Runtime is related to how we store the nodes in our priority queue.  First, note that we typcailly say `log|V|` and never `log|E|` because at worst, we have all our verticies in the priority queue, hence `|V|` instead of `|E|`.  Then, operations on a priority take log time because we have to maintain an order in the priority queue.  In contrast, a regular queue is unordered.  
+
+A simple (although not entirely correct way) to explain the cost is that we have the cost of BFS `O(|E| + |V|)` but since the operation of maintaining the frontier cost more (because of the logarithm) we get `O((|E| + |V|) log|V|)`.  We have a logarithmic cost for each neighbor we add to the queue, and we do this `|E|` times, so we get one part `O(|E|log|V|)`.  Then, at worst we have to explore each vertex and add remove it from the queue.  Removing from the priority queue takes logarithmic time and we do it `|V|` times, so we get `O(|V|log|V|)`.  *NOTE: this is when using a min-binary-heap*.  Putting it all together: `O(|E|log|V| + |V|log|V|)` which equals `O((|E| + |V|)log|V|)`
+
+A Fibonacci heap can improve the time it takes to add nodes to the priority queue, thus we get `O(|E| + |V|log|V|)`
 ## Space Complexity
+Worst case:
+- `O(|V|)` Where `|V|` is the number of verticies in a graph.
+
+Why?
+
+At worst case, we're storing all verticies of the graph so we get `O(|V|)`.  You might get worse than this depending on how you remember the best paths to verticies.
 # A* (A-Star)
 ## Summary
 - What is A*?
 - When to use / What it's good at
 ## Runtime Complexity
+
+
 ## Space Complexity
+
 
 # Flash Cards
 - Sparse vs. Dense Graphs
@@ -315,3 +355,5 @@ Best First Search can be implemented in a simple form by using Greedy Best First
         - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/lecture-videos/lecture-5-search-optimal-branch-and-bound-a/ 
     - Tutorials
         - https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-034-artificial-intelligence-fall-2010/tutorials/
+    - AI Search complexity
+        - http://www.ai.mit.edu/courses/6.034b/searchcomplex.pdf 
