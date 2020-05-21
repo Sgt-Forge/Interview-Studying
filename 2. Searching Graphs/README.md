@@ -232,8 +232,8 @@ Don't Use Dijstra's
 ## Runtime Complexity
 Worse case:
 
-- Time complexity can be reduced to `O(|E| + |V|log|V|)` if using a Fibonacci heap for the priority queue.  This is the common answer
-- `O((|E| + |V|) * log|V|)` where `|E|` is the total number of edges in the graph and `|V|` is the total number of verticies in the graph
+- Time complexity can be reduced to `O(|E| + |V|log|V|)` if using a Fibonacci heap for the priority queue.  This is the common answer [18]](http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=
+- `O((|E| + |V|) * log|V|)` where `|E|` is the total number of edges in the graph and `|V|` is the total number of verticies in the graph [18]](http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=
     - This is when using a min-binary heap for the priority queue
 
 Why?
@@ -242,7 +242,7 @@ Runtime is related to how we store the nodes in our priority queue.  First, note
 
 A simple (although not entirely correct way) to explain the cost is that we have the cost of BFS `O(|E| + |V|)` but since the operation of maintaining the frontier cost more (because of the logarithm) we get `O((|E| + |V|) log|V|)`.  We have a logarithmic cost for each neighbor we add to the queue, and we do this `|E|` times, so we get one part `O(|E|log|V|)`.  Then, at worst we have to explore each vertex and add remove it from the queue.  Removing from the priority queue takes logarithmic time and we do it `|V|` times, so we get `O(|V|log|V|)`.  *NOTE: this is when using a min-binary-heap*.  Putting it all together: `O(|E|log|V| + |V|log|V|)` which equals `O((|E| + |V|)log|V|)`
 
-A Fibonacci heap can improve the time it takes to add nodes to the priority queue, thus we get `O(|E| + |V|log|V|)`
+A Fibonacci heap can improve the time it takes to add nodes to the priority queue, thus we get `O(|E| + |V|log|V|)` [[18]](http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=)
 ## Space Complexity
 Worst case:
 - `O(|V|)` Where `|V|` is the number of verticies in a graph.
@@ -336,6 +336,7 @@ At worst case, we're storing all verticies of the graph so we get `O(|V|)`.  You
 - [15] [RedBlobGames on A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 - [16] [ICS.edu on IDS/IDDS](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)
 - [17] [GeeksForGeeks on IDS/IDDS](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
+- [18] [Dijkstras at EECS at Berkley] (http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=)
 
 # Other Great Resources You Should Study
 - https://cs.stanford.edu/people/abisee/gs.pdf
