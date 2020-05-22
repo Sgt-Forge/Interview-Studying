@@ -253,12 +253,52 @@ At worst case, we're storing all verticies of the graph so we get `O(|V|)`.  You
 # A* (A-Star)
 ## Summary
 - What is A*?
+
+A* search is an informed search algorithm that takes uses combines aspects of Dijkstra's algorithm and Best-First-Search algorithms.  Just like Dijkstra's algorithm, A* maintians knowledge about the length of the current path to the start node.  A* defines a function `f(n)` to define that length of the path from the start node to the new node we want to explore, `n`.  Dijkstra's defines the same function to determine priority in it's priority queue.  A* adds a second function, `h(n)`.  `h(n)` is the estimated cost from the new node ( the node we want to explore / add to the frontier) and the goal node.  It's a best guess approximation of the remaining distance to the goal.  This is known as the **heuristic** function, and has been defined in Best First Search.
+
+A* combines both `f(n)` (length of the path so far) and `h(n)` (remaining length) to determine the order of the Priority queue.  Typically, we add `f(n)` and `h(n)` together.  The node with the smallest sum of `f(n)` and `h(n)` has the highest priority in the priority queue.A
+
+The heuristic may underestimate the cost it takes to get to the goal, but it can *never* overestimate the cost to the goal node.  A* cannot guarantee a correct solution if it overestimates the heuristic cost [[19]][A* at Freiburg EDU](http://ad-teaching.informatik.uni-freiburg.de/route-planning-ss2012/lecture-3.mp4 )
+
+Heuristics should follow several rules to yield the best results:
+
+- A heuristic should be **admissable**.  Admissable means that the heuristic is less than or equal to the *true* / *correct* value of the heuristic. We could say `h(n) <= h*(n)` where `h(n)` is the value of the heuristic (estimated distance to the goal), and `h*(n)` is the true value of the heuristic (true distance to the goal). [[20]](https://en.wikipedia.org/wiki/Admissible_heuristic)
+- A heuristic should be **Monotonic** if possible.  Monotonic is a stronger condition than admissability.  The monotonic condition says that the heuristic from a given node `N` should be less than or equal to the cost of moving to a neighbor node `P` *plus* the heuristic cost of that neighbor node `h(P)`.  More precisely:
+    - `h(N) <= c(N, P) + h(P)` and `h(G) = 0` where `h` is the heuristic, `N` is node on the graph, `P` is any neighbor of `N`, `G` is the goal node, `c(N, P)` is the cost of reaching `P` from `N` [[21]](https://en.wikipedia.org/wiki/Consistent_heuristic)
+- We can expect A* to have polynomial runtime if the heuristic follows the rule below:
+    - `|h(n) - h*(n)| < log(h*(n))`.  i.e. the error of the heuristic must be less than the log of the true heuristic cost
+
 - When to use / What it's good at
+
+Use A* when:
+- You have a complex graph that implements movement costs and heuristic functions
+- You need a **complete** and **optimal** solution.  Completeness means A* will always find an optimal solution if one exists.  Optimal means that A* searches the fewest possible nodes in the process of finding the shortest path
+- You have very good heuristics.  The better / more accurate your heuristic, the faster A* finds the optimal path
+
+Don't use A* when:
+- You have limited memory space.  A* can take up a lot of memroy
 ## Runtime Complexity
 
+- Runtime for A* verymuch depends on:
+    1. You graph.  Is it sparse or dense?
+    2. Your heuristic.  Does it accurately estimate the cost from the goal to the frontier node.
+- We know that if the heuristic returns `0` for all nodes, then A* turns into Dijkstra's for the most part [[19]](http://ad-teaching.informatik.uni-freiburg.de/route-planning-ss2012/lecture-3.mp4)
 
+Worst Case
+- Exponential
+- `O(b^d)` where `b` is the branching factor of the tree, and `d` is the depth of the goal node [[22]](https://en.wikipedia.org/wiki/A*_search_algorithm)
+- Another notation: `O(|E| + |V|)` Where `|E|` is the total number of edges in the graph and `|V|` is the total number of verticies in the graph [[23]](https://cs.stackexchange.com/questions/56176/a-graph-search-time-complexity)
+- If the heuristic function behaves such that: `| h(n) - h*(n) | < O(log *h(n) )` Then we can expect polynomial runtime. `h(n)` is the heuristic function used in the A* algorithm. `h*(n)` is the perfect heuristic function (i.e. the true cost to the goal)
+- TL;DR
+    - Polynomial (O(N)) when using a **very good** heuristic
+    - Exponential when using a bad heuristic
 ## Space Complexity
 
+Space complexity is exponential, but still depends on graph / tree stucture.  
+- `O(b^d)` where `b` is the branching factor of the tree, and `d` is the depth of the goal node in the tree.
+- Could use the definition `O(|E|)`, but this hides information because we need to know `|E|` vs `|V|`
+
+For each node you expand, you add `b` nodes to memory, hence complexity of O(b^d) [[22]](https://en.wikipedia.org/wiki/A*_search_algorithm)]
 
 # Flash Cards
 - Sparse vs. Dense Graphs
@@ -336,7 +376,12 @@ At worst case, we're storing all verticies of the graph so we get `O(|V|)`.  You
 - [15] [RedBlobGames on A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 - [16] [ICS.edu on IDS/IDDS](https://www.ics.uci.edu/~welling/teaching/271fall09/UninformedSearch271f09.pdf)
 - [17] [GeeksForGeeks on IDS/IDDS](https://www.geeksforgeeks.org/iterative-deepening-searchids-iterative-deepening-depth-first-searchiddfs/)
-- [18] [Dijkstras at EECS at Berkley] (http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=)
+- [18] [Dijkstras at EECS at Berkley] (http://www-inst.eecs.berkeley.edu/~cs61bl/r//cur/graphs/dijkstra-algorithm-runtime.html?topic=lab24.topic&step=4&course=)A
+- [19] [A* at Freiburg EDU](http://ad-teaching.informatik.uni-freiburg.de/route-planning-ss2012/lecture-3.mp4 )
+- [20] [Wikipedia Admissible Heuristic](https://en.wikipedia.org/wiki/Admissible_heuristic)
+- [21] [Wikipedia Consistend Heuristic](https://en.wikipedia.org/wiki/Consistent_heuristic)
+- [22] [Wikipedia on A*](https://en.wikipedia.org/wiki/A*_search_algorithm)
+- [23] [CS stackexchane on A* time complexity](https://cs.stackexchange.com/questions/56176/a-graph-search-time-complexity)
 
 # Other Great Resources You Should Study
 - https://cs.stanford.edu/people/abisee/gs.pdf
