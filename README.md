@@ -1,2 +1,2 @@
 # Interview-Studying
-A repository to help study for coding interview!
+A repository to help study for coding interviews!
